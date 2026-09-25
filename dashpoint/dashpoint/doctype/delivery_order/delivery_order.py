@@ -97,9 +97,7 @@ class DeliveryOrder(Document):
             current_stock = frappe.db.get_value(
                 "Packaging Material", row.material, "stock_qty"
             ) or 0
-            # Direct DB update is intentional: stock deduction is a controlled
-            # system side effect of a submitted Delivery Order and must not be
-            # blocked by the submitting user's Packaging Material permissions.
+       
             frappe.db.set_value(
                 "Packaging Material",
                 row.material,
@@ -203,7 +201,6 @@ class DeliveryOrder(Document):
             )
 
     def on_update(self):
-        # Do not call self.save() here: that would recursively trigger on_update.
         return
 
 
