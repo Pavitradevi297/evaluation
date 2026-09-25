@@ -71,9 +71,6 @@ class TestAPIAndPermissions(FrappeTestCase):
             )
 
     def test_rider_query_condition_is_row_limited_for_rider_role(self):
-        # The exact SQL condition is evaluated against the session user's
-        # Rider in a live site. Managers intentionally receive an empty
-        # condition.
         with patch(
             "frappe.get_roles",
             return_value=["DP Ops Manager"],
