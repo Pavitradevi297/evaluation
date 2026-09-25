@@ -98,6 +98,29 @@ def safe_get_delivery_order_data():
             row.pop("customer_email", None)
     return rows
 
+@frappe.whitelist()
+def get_delivery_status():
+    """Return safe delivery status information for a Delivery Order."""
+    delivery_order_name = frappe.form_dict.get("delivery_order_name")
+
+    if not delivery_order_name or not frappe.db.exists(
+        "Delivery Order", delivery_order_name
+    ):
+        frappe.local.response["http_status_code"] = 404
+        return {"error": "Not found"}
+
+    order = frappe.db.get_value(
+        "Delivery Order",
+        delivery_order_name,
+        ["status", "delivery_zone", "delivery_attempts_count"],
+        as_dict=True,
+    )
+
+    return {
+        "status": order.status,
+        "zone": order.delivery_zone,
+        "attempts": order.delivery_attempts_count,
+    }
 
 @frappe.whitelist()
 def send_delivery_confirmation(delivery_order_name):
