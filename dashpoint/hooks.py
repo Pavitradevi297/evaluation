@@ -24,7 +24,9 @@ doc_events = {
 }
 
 scheduler_events = {
-    "hourly": ["dashpoint.tasks.process_delivery_orders"]
+    "daily": [
+        "dashpoint.tasks.check_stuck_reattempts"
+    ]
 }
 
 fixtures = [

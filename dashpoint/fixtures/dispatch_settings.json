@@ -1,11 +1,13 @@
 [
-  {
-    "doctype": "Dispatch Settings",
-    "name": "Dispatch Settings",
-    "dispatch_center_name": "DashPoint Dispatch Center",
-    "ops_manager_email": "opsmanager@example.com",
-    "max_delivery_attempts": 3,
-    "default_delivery_fee": 60,
-    "low_stock_alert_enabled": 1
-  }
+ {
+  "default_delivery_fee": 60.0,
+  "dispatch_center_name": "DashPoint Dispatch Center",
+  "docstatus": 0,
+  "doctype": "Dispatch Settings",
+  "low_stock_alert_enabled": 1,
+  "max_delivery_attempts": 3,
+  "modified": "2026-09-25 10:55:38.192904",
+  "name": "Dispatch Settings",
+  "ops_manager_email": "opsmanager@example.com"
+ }
 ]
