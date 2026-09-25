@@ -8,6 +8,7 @@
   "max_delivery_attempts": 3,
   "modified": "2026-09-25 10:55:38.192904",
   "name": "Dispatch Settings",
-  "ops_manager_email": "opsmanager@example.com"
+  "ops_manager_email": "opsmanager@example.com",
+  "webhook_url": null
  }
 ]
