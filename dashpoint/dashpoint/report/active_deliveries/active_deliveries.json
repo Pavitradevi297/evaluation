@@ -1,0 +1,34 @@
+{
+  "doctype": "Report",
+  "name": "Active Deliveries",
+  "report_name": "Active Deliveries",
+  "ref_doctype": "Delivery Order",
+  "report_type": "Query Report",
+  "is_standard": "Yes",
+  "module": "Dashpoint",
+  "disabled": 0,
+  "add_total_row": 0,
+  "apply_user_permissions": 1,
+  "query": "SELECT\n    name,\n    customer_name,\n    delivery_zone,\n    status,\n    assigned_rider,\n    delivery_attempts_count,\n    creation\nFROM `tabDelivery Order`\nWHERE status NOT IN (\"Delivered\", \"Cancelled\")\n  AND (\n        %(delivery_zone)s IS NULL\n        OR %(delivery_zone)s = \"\"\n        OR %(delivery_zone)s = \"All Zones\"\n        OR delivery_zone = %(delivery_zone)s\n      )\nORDER BY creation ASC",
+  "filters": [
+    {
+      "fieldname": "delivery_zone",
+      "label": "Delivery Zone",
+      "fieldtype": "Select",
+      "options": "All Zones\nNorth Zone\nCentral Zone\nSouth Zone",
+      "default": "All Zones",
+      "mandatory": 0
+    }
+  ],
+  "roles": [
+    {
+      "role": "DP Dispatch Staff"
+    },
+    {
+      "role": "DP Rider"
+    },
+    {
+      "role": "DP Ops Manager"
+    }
+  ]
+}

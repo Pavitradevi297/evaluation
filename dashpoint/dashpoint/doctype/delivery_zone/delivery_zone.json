@@ -1,0 +1,82 @@
+{
+  "name": "Delivery Zone",
+  "autoname": "field:zone_name",
+  "naming_rule": "By fieldname",
+  "field_order": [
+    "zone_name",
+    "description",
+    "avg_delivery_hours"
+  ],
+  "fields": [
+    {
+      "fieldname": "zone_name",
+      "fieldtype": "Data",
+      "label": "Zone Name",
+      "reqd": 1,
+      "bold": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "description",
+      "fieldtype": "Small Text",
+      "label": "Description"
+    },
+    {
+      "fieldname": "avg_delivery_hours",
+      "fieldtype": "Int",
+      "label": "Avg Delivery Hours"
+    }
+  ],
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Dashpoint",
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "editable_grid": 1,
+  "grid_page_length": 50,
+  "rows_threshold_for_grid_search": 20,
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "links": [],
+  "actions": [],
+  "states": [],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1
+    },
+    {
+      "role": "DP Dispatch Staff",
+      "read": 1
+    },
+    {
+      "role": "DP Rider",
+      "read": 1
+    },
+    {
+      "role": "DP Ops Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1
+    }
+  ],
+  "track_changes": 1
+}

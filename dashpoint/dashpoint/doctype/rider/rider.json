@@ -1,0 +1,149 @@
+{
+  "name": "Rider",
+  "autoname": "naming_series:naming_series",
+  "naming_rule": "By \"Naming Series\" field",
+  "field_order": [
+    "rider_name",
+    "employee_id",
+    "phone",
+    "email",
+    "assigned_zone",
+    "status",
+    "vehicle_type",
+    "photo",
+    "joining_date",
+    "user",
+    "notes",
+    "naming_series"
+  ],
+  "fields": [
+    {
+      "fieldname": "rider_name",
+      "fieldtype": "Data",
+      "label": "Rider Name",
+      "reqd": 1,
+      "bold": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "employee_id",
+      "fieldtype": "Data",
+      "label": "Employee ID",
+      "set_only_once": 1
+    },
+    {
+      "fieldname": "phone",
+      "fieldtype": "Data",
+      "label": "Phone"
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "label": "Email"
+    },
+    {
+      "fieldname": "assigned_zone",
+      "fieldtype": "Link",
+      "label": "Assigned Zone",
+      "options": "Delivery Zone"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Active\nOn Leave\nResigned",
+      "default": "Active",
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "vehicle_type",
+      "fieldtype": "Select",
+      "label": "Vehicle Type",
+      "options": "Bike\nScooter\nVan"
+    },
+    {
+      "fieldname": "photo",
+      "fieldtype": "Attach Image",
+      "label": "Photo"
+    },
+    {
+      "fieldname": "joining_date",
+      "fieldtype": "Date",
+      "label": "Joining Date"
+    },
+    {
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "label": "User",
+      "options": "User",
+      "set_only_once": 1
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Text",
+      "label": "Notes",
+      "depends_on": "eval:doc.status==\"On Leave\""
+    },
+    {
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "RDR-.####",
+      "default": "RDR-.####"
+    }
+  ],
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Dashpoint",
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "editable_grid": 1,
+  "grid_page_length": 50,
+  "rows_threshold_for_grid_search": 20,
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "links": [],
+  "actions": [],
+  "states": [],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1
+    },
+    {
+      "role": "DP Dispatch Staff",
+      "read": 1
+    },
+    {
+      "role": "DP Rider",
+      "read": 1,
+      "write": 1,
+      "if_owner": 1
+    },
+    {
+      "role": "DP Ops Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "doctype": "Dispatch Settings",
+    "name": "Dispatch Settings",
+    "dispatch_center_name": "DashPoint Dispatch Center",
+    "ops_manager_email": "opsmanager@example.com",
+    "max_delivery_attempts": 3,
+    "default_delivery_fee": 60,
+    "low_stock_alert_enabled": 1
+  }
+]

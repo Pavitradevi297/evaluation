@@ -1,0 +1,10 @@
+[
+  {
+    "doctype": "Letter Head",
+    "name": "DashPoint Letter Head",
+    "content": "<div style=\"text-align:center;\"><strong>DashPoint Dispatch Center</strong><br>Delivery &amp; Logistics Management</div>",
+    "is_default": 1,
+    "disabled": 0,
+    "letter_head_name": "DashPoint Letter Head"
+  }
+]
