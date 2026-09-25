@@ -12,7 +12,6 @@ class AuditLog(Document):
 def log_document_event(doc, method=None):
     """Create an Audit Log entry for document events."""
 
-    # Do not audit Audit Log documents themselves
     if doc.doctype == "Audit Log":
         return
 
