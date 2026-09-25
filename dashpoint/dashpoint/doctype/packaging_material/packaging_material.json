@@ -1,0 +1,112 @@
+{
+  "name": "Packaging Material",
+  "autoname": "",
+  "field_order": [
+    "material_name",
+    "material_code",
+    "unit_cost",
+    "charge_to_customer",
+    "stock_qty",
+    "reorder_level",
+    "is_active"
+  ],
+  "fields": [
+    {
+      "fieldname": "material_name",
+      "fieldtype": "Data",
+      "label": "Material Name",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_global_search": 1
+    },
+    {
+      "fieldname": "material_code",
+      "fieldtype": "Data",
+      "label": "Material Code",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "unit_cost",
+      "fieldtype": "Currency",
+      "label": "Unit Cost",
+      "reqd": 1
+    },
+    {
+      "fieldname": "charge_to_customer",
+      "fieldtype": "Currency",
+      "label": "Charge to Customer",
+      "reqd": 1
+    },
+    {
+      "fieldname": "stock_qty",
+      "fieldtype": "Float",
+      "label": "Stock Qty",
+      "default": "0"
+    },
+    {
+      "fieldname": "reorder_level",
+      "fieldtype": "Float",
+      "label": "Reorder Level",
+      "default": "20"
+    },
+    {
+      "fieldname": "is_active",
+      "fieldtype": "Check",
+      "label": "Is Active",
+      "default": "1"
+    }
+  ],
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Dashpoint",
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "editable_grid": 1,
+  "grid_page_length": 50,
+  "rows_threshold_for_grid_search": 20,
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "links": [],
+  "actions": [],
+  "states": [],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1
+    },
+    {
+      "role": "DP Dispatch Staff",
+      "read": 1
+    },
+    {
+      "role": "DP Rider",
+      "read": 1
+    },
+    {
+      "role": "DP Ops Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1
+    }
+  ]
+}

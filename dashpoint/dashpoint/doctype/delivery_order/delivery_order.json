@@ -1,0 +1,275 @@
+{
+  "name": "Delivery Order",
+  "autoname": "naming_series:naming_series",
+  "naming_rule": "By \"Naming Series\" field",
+  "is_submittable": 1,
+  "track_changes": 1,
+  "field_order": [
+    "customer_pickup_section",
+    "customer_name",
+    "customer_phone",
+    "customer_email",
+    "pickup_address",
+    "delivery_address",
+    "delivery_zone",
+    "package_description",
+    "assignment_and_dispatch_section",
+    "assigned_rider",
+    "dispatch_notes",
+    "cod_amount",
+    "dispatch_date",
+    "priority",
+    "packaging_details_section",
+    "packaging_used",
+    "delivery_and_charges_section",
+    "delivery_fee",
+    "packaging_total",
+    "final_amount",
+    "payment_status",
+    "delivered_on",
+    "delivery_attempts_count",
+    "failure_reason",
+    "remarks",
+    "status",
+    "amended_from",
+    "naming_series"
+  ],
+  "fields": [
+    {
+      "fieldname": "customer_pickup_section",
+      "fieldtype": "Section Break",
+      "label": "Customer & Pickup"
+    },
+    {
+      "fieldname": "customer_name",
+      "fieldtype": "Data",
+      "label": "Customer Name",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "customer_phone",
+      "fieldtype": "Data",
+      "label": "Customer Phone",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "customer_email",
+      "fieldtype": "Data",
+      "label": "Customer Email"
+    },
+    {
+      "fieldname": "pickup_address",
+      "fieldtype": "Small Text",
+      "label": "Pickup Address",
+      "reqd": 1
+    },
+    {
+      "fieldname": "delivery_address",
+      "fieldtype": "Small Text",
+      "label": "Delivery Address",
+      "reqd": 1
+    },
+    {
+      "fieldname": "delivery_zone",
+      "fieldtype": "Link",
+      "label": "Delivery Zone",
+      "options": "Delivery Zone",
+      "reqd": 1
+    },
+    {
+      "fieldname": "package_description",
+      "fieldtype": "Text Editor",
+      "label": "Package Description",
+      "reqd": 1
+    },
+    {
+      "fieldname": "assignment_and_dispatch_section",
+      "fieldtype": "Section Break",
+      "label": "Assignment & Dispatch"
+    },
+    {
+      "fieldname": "assigned_rider",
+      "fieldtype": "Link",
+      "label": "Assigned Rider",
+      "options": "Rider"
+    },
+    {
+      "fieldname": "dispatch_notes",
+      "fieldtype": "Text Editor",
+      "label": "Dispatch Notes",
+      "depends_on": "eval:doc.assigned_rider"
+    },
+    {
+      "fieldname": "cod_amount",
+      "fieldtype": "Currency",
+      "label": "COD Amount",
+      "depends_on": "eval:doc.assigned_rider"
+    },
+    {
+      "fieldname": "dispatch_date",
+      "fieldtype": "Date",
+      "label": "Dispatch Date"
+    },
+    {
+      "fieldname": "priority",
+      "fieldtype": "Select",
+      "label": "Priority",
+      "options": "Standard\nExpress\nSame-Day",
+      "default": "Standard"
+    },
+    {
+      "fieldname": "packaging_details_section",
+      "fieldtype": "Section Break",
+      "label": "Packaging Used"
+    },
+    {
+      "fieldname": "packaging_used",
+      "fieldtype": "Table",
+      "label": "Packaging Used",
+      "options": "Packaging Usage Entry"
+    },
+    {
+      "fieldname": "delivery_and_charges_section",
+      "fieldtype": "Section Break",
+      "label": "Delivery & Charges"
+    },
+    {
+      "fieldname": "delivery_fee",
+      "fieldtype": "Currency",
+      "label": "Delivery Fee",
+      "default": "60",
+      "allow_on_submit": 1
+    },
+    {
+      "fieldname": "packaging_total",
+      "fieldtype": "Currency",
+      "label": "Packaging Total",
+      "read_only": 1
+    },
+    {
+      "fieldname": "final_amount",
+      "fieldtype": "Currency",
+      "label": "Final Amount",
+      "read_only": 1
+    },
+    {
+      "fieldname": "payment_status",
+      "fieldtype": "Select",
+      "label": "Payment Status",
+      "options": "Unpaid\nPaid\nCOD Pending",
+      "allow_on_submit": 1,
+      "default": "Unpaid"
+    },
+    {
+      "fieldname": "delivered_on",
+      "fieldtype": "Datetime",
+      "label": "Delivered On",
+      "allow_on_submit": 1
+    },
+    {
+      "fieldname": "delivery_attempts_count",
+      "fieldtype": "Int",
+      "label": "Delivery Attempts Count",
+      "read_only": 1,
+      "default": "0"
+    },
+    {
+      "fieldname": "failure_reason",
+      "fieldtype": "Select",
+      "label": "Failure Reason",
+      "options": "Customer Unavailable\nWrong Address\nRefused\nOther",
+      "depends_on": "eval:doc.status==\"Delivery Failed\""
+    },
+    {
+      "fieldname": "remarks",
+      "fieldtype": "Small Text",
+      "label": "Remarks"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Draft\nPickup Scheduled\nIn Transit\nDelivery Failed\nRe-attempt Scheduled\nDelivered\nEscalated\nCancelled",
+      "default": "Draft",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "amended_from",
+      "fieldtype": "Link",
+      "label": "Amended From",
+      "options": "Delivery Order",
+      "read_only": 1,
+      "no_copy": 1,
+      "print_hide": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "DO-.YYYY.-.#####",
+      "default": "DO-.YYYY.-.#####"
+    }
+  ],
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Dashpoint",
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "editable_grid": 1,
+  "grid_page_length": 50,
+  "rows_threshold_for_grid_search": 20,
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "links": [],
+  "actions": [],
+  "states": [],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1
+    },
+    {
+      "role": "DP Dispatch Staff",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "print": 1
+    },
+    {
+      "role": "DP Rider",
+      "read": 1,
+      "write": 1,
+      "submit": 1
+    },
+    {
+      "role": "DP Ops Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1
+    }
+  ]
+}

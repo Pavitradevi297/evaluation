@@ -1,0 +1,26 @@
+[
+  {
+    "doctype": "Role",
+    "name": "DP Dispatch Staff",
+    "role_name": "DP Dispatch Staff",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "DP Rider",
+    "role_name": "DP Rider",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1
+  },
+  {
+    "doctype": "Role",
+    "name": "DP Ops Manager",
+    "role_name": "DP Ops Manager",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1
+  }
+]

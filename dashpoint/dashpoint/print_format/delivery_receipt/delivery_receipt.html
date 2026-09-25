@@ -1,0 +1,71 @@
+<style>
+@page { size: A4; margin: 1cm; }
+.delivery-receipt { font-family: Arial, sans-serif; font-size: 12px; color: #222; }
+.receipt-header { text-align: center; margin-bottom: 20px; }
+.receipt-header h1 { margin: 0; font-size: 24px; }
+.section-title { font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+.info-table, .packaging-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.info-table td { padding: 5px; vertical-align: top; }
+.info-label { font-weight: bold; width: 25%; }
+.packaging-table th, .packaging-table td { border: 1px solid #999; padding: 7px; text-align: left; }
+.text-right { text-align: right !important; }
+.total-row { font-weight: bold; }
+.final-amount { margin-top: 20px; text-align: right; font-size: 20px; font-weight: bold; }
+.cod-banner { margin: 15px 0; padding: 12px; text-align: center; font-size: 16px; font-weight: bold; border: 2px solid #222; }
+.print-summary { margin-top: 10px; font-style: italic; }
+.page-break { page-break-before: always; }
+@media print { .interactive, .btn, button, .no-print { display: none !important; } }
+</style>
+
+<div class="delivery-receipt">
+    <div class="receipt-header">
+        <h1>Delivery Receipt</h1>
+        <p><strong>{{ get_dispatch_center_name() }}</strong></p>
+        <p class="print-summary">{{ doc.print_summary }}</p>
+    </div>
+
+    <div class="section-title">Customer Details</div>
+    <table class="info-table">
+        <tr><td class="info-label">Customer Name</td><td>{{ doc.customer_name or "" }}</td></tr>
+        <tr><td class="info-label">Receipt Number</td><td>{{ doc.receipt_number or doc.name }}</td></tr>
+        <tr><td class="info-label">Receipt Date</td><td>{{ doc.receipt_date or "" }}</td></tr>
+        <tr><td class="info-label">Payment Status</td><td>{{ doc.payment_status or "" }}</td></tr>
+    </table>
+
+    {% if doc.payment_status == "COD Pending" %}
+    <div class="cod-banner">COD — COLLECT ₹{{ format_value(doc.final_amount, "Currency") }} ON DELIVERY</div>
+    {% endif %}
+
+    <div class="section-title">Package Details</div>
+    <table class="info-table">
+        <tr><td class="info-label">Delivery Order</td><td>{{ doc.delivery_order or "" }}</td></tr>
+        <tr><td class="info-label">Delivery Zone</td><td>{{ doc.delivery_zone or "" }}</td></tr>
+        <tr><td class="info-label">Delivery Fee</td><td>{{ format_value(doc.delivery_fee or 0, "Currency") }}</td></tr>
+    </table>
+
+    {% if doc.packaging_usage %}
+    <div class="section-title">Packaging Usage</div>
+    <table class="packaging-table">
+        <thead><tr><th>Material</th><th>Material Name</th><th class="text-right">Quantity</th><th class="text-right">Unit Price</th><th class="text-right">Total Price</th></tr></thead>
+        <tbody>
+        {% for row in doc.packaging_usage %}
+            <tr>
+                <td>{{ row.material or "" }}</td><td>{{ row.material_name or "" }}</td>
+                <td class="text-right">{{ row.quantity or 0 }}</td>
+                <td class="text-right">{{ format_value(row.unit_price or 0, "Currency") }}</td>
+                <td class="text-right">{{ format_value(row.total_price or 0, "Currency") }}</td>
+            </tr>
+            {% if loop.index == 10 and not loop.last %}
+                </tbody></table><div class="page-break"></div><table class="packaging-table">
+                <thead><tr><th>Material</th><th>Material Name</th><th class="text-right">Quantity</th><th class="text-right">Unit Price</th><th class="text-right">Total Price</th></tr></thead><tbody>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+        <tfoot><tr class="total-row"><td colspan="4" class="text-right">Packaging Total</td><td class="text-right">{{ format_value(doc.packaging_total or 0, "Currency") }}</td></tr></tfoot>
+    </table>
+    {% else %}
+        <p>No packaging usage recorded.</p>
+    {% endif %}
+
+    <div class="final-amount">Final Amount: {{ format_value(doc.final_amount, "Currency") }}</div>
+</div>

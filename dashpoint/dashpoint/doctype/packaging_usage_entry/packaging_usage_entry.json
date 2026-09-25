@@ -1,0 +1,67 @@
+{
+  "name": "Packaging Usage Entry",
+  "istable": 1,
+  "field_order": [
+    "material",
+    "material_name",
+    "unit_price",
+    "quantity",
+    "total_price"
+  ],
+  "fields": [
+    {
+      "fieldname": "material",
+      "fieldtype": "Link",
+      "label": "Material",
+      "options": "Packaging Material",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "material_name",
+      "fieldtype": "Data",
+      "label": "Material Name",
+      "fetch_from": "material.material_name",
+      "fetch_if_empty": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "unit_price",
+      "fieldtype": "Currency",
+      "label": "Unit Price",
+      "fetch_from": "material.charge_to_customer",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "quantity",
+      "fieldtype": "Float",
+      "label": "Quantity",
+      "default": "1",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "total_price",
+      "fieldtype": "Currency",
+      "label": "Total Price",
+      "read_only": 1,
+      "in_list_view": 1
+    }
+  ],
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Dashpoint",
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "editable_grid": 1,
+  "grid_page_length": 50,
+  "rows_threshold_for_grid_search": 20,
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "links": [],
+  "actions": [],
+  "states": [],
+  "permissions": []
+}

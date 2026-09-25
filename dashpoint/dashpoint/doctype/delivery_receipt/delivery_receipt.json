@@ -1,0 +1,141 @@
+{
+  "name": "Delivery Receipt",
+  "autoname": "",
+  "is_submittable": 1,
+  "field_order": [
+    "receipt_number",
+    "delivery_order",
+    "customer_name",
+    "delivery_zone",
+    "receipt_date",
+    "delivery_fee",
+    "packaging_usage",
+    "packaging_total",
+    "total_amount",
+    "final_amount",
+    "payment_status"
+  ],
+  "fields": [
+    {
+      "fieldname": "receipt_number",
+      "fieldtype": "Data",
+      "label": "Receipt Number",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "delivery_order",
+      "fieldtype": "Link",
+      "label": "Delivery Order",
+      "options": "Delivery Order",
+      "reqd": 1,
+      "set_only_once": 1
+    },
+    {
+      "fieldname": "customer_name",
+      "fieldtype": "Data",
+      "label": "Customer Name",
+      "fetch_from": "delivery_order.customer_name",
+      "read_only": 1
+    },
+    {
+      "fieldname": "delivery_zone",
+      "fieldtype": "Link",
+      "label": "Delivery Zone",
+      "options": "Delivery Zone",
+      "read_only": 1
+    },
+    {
+      "fieldname": "receipt_date",
+      "fieldtype": "Date",
+      "label": "Receipt Date",
+      "default": "Today"
+    },
+    {
+      "fieldname": "delivery_fee",
+      "fieldtype": "Currency",
+      "label": "Delivery Fee"
+    },
+    {
+      "fieldname": "packaging_usage",
+      "fieldtype": "Table",
+      "label": "Packaging Usage",
+      "options": "Packaging Usage Entry"
+    },
+    {
+      "fieldname": "packaging_total",
+      "fieldtype": "Currency",
+      "label": "Packaging Total",
+      "read_only": 1
+    },
+    {
+      "fieldname": "total_amount",
+      "fieldtype": "Currency",
+      "label": "Total Amount",
+      "read_only": 1
+    },
+    {
+      "fieldname": "final_amount",
+      "fieldtype": "Currency",
+      "label": "Final Amount",
+      "read_only": 1
+    },
+    {
+      "fieldname": "payment_status",
+      "fieldtype": "Select",
+      "label": "Payment Status",
+      "options": "Unpaid\nPaid\nCOD Pending",
+      "in_list_view": 1
+    }
+  ],
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "module": "Dashpoint",
+  "allow_bulk_edit": 1,
+  "allow_rename": 1,
+  "editable_grid": 1,
+  "grid_page_length": 50,
+  "rows_threshold_for_grid_search": 20,
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "links": [],
+  "actions": [],
+  "states": [],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1
+    },
+    {
+      "role": "DP Dispatch Staff",
+      "read": 1,
+      "print": 1
+    },
+    {
+      "role": "DP Ops Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "submit": 1,
+      "cancel": 1,
+      "email": 1,
+      "export": 1,
+      "report": 1,
+      "share": 1
+    }
+  ]
+}

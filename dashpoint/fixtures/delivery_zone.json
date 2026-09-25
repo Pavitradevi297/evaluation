@@ -1,0 +1,17 @@
+[
+  {
+    "doctype": "Delivery Zone",
+    "name": "North Zone",
+    "zone_name": "North Zone"
+  },
+  {
+    "doctype": "Delivery Zone",
+    "name": "Central Zone",
+    "zone_name": "Central Zone"
+  },
+  {
+    "doctype": "Delivery Zone",
+    "name": "South Zone",
+    "zone_name": "South Zone"
+  }
+]
