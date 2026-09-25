@@ -7,7 +7,7 @@ def delivery_order_query_conditions(user=None):
 
     if "DP Ops Manager" in roles or "System Manager" in roles:
         return ""
-
+ 
     if "DP Rider" in roles:
         rider = frappe.db.get_value("Rider", {"user": user}, "name")
         if rider:
