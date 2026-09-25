@@ -32,6 +32,12 @@
       "label": "Default Delivery Fee",
       "default": "60"
     },
+{
+    "fieldname": "webhook_url",
+    "fieldtype": "Data",
+    "label": "Webhook URL",
+    "options": "URL"
+},
     {
       "fieldname": "low_stock_alert_enabled",
       "fieldtype": "Check",

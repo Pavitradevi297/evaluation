@@ -99,7 +99,42 @@ class TestDeliveryOrder(FrappeTestCase):
         self.assertEqual(frappe.db.get_value("Packaging Material", material.name, "stock_qty"), 4)
         receipt = frappe.db.get_value("Delivery Receipt", {"delivery_order": order.name}, "name")
         self.assertTrue(receipt)
-        enqueue.assert_called_once()
+        self.assertEqual(enqueue.call_count, 2)
+        enqueue.assert_any_call(
+            "dashpoint.dashpoint.api.send_delivery_confirmation",
+            queue="short",
+            delivery_order_name=order.name,
+        )
+        enqueue.assert_any_call(
+            "dashpoint.dashpoint.api.send_webhook",
+            queue="short",
+            delivery_order_name=order.name,
+        )
+
+    @patch("requests.post")
+    def test_webhook_sends_delivery_completed_payload(self, post):
+        settings = frappe.get_single("Dispatch Settings")
+        settings.webhook_url = "https://example.com/webhook"
+        settings.save()
+
+        material = make_packaging_material(stock_qty=5)
+        order = make_delivery_order(_material=material, status="Delivered")
+
+        post.return_value.raise_for_status.return_value = None
+
+        from dashpoint.dashpoint.api import send_webhook
+
+        send_webhook(order.name)
+
+        post.assert_called_once_with(
+            "https://example.com/webhook",
+            json={
+                "event": "delivery_completed",
+                "delivery_order": order.name,
+                "amount": order.final_amount,
+            },
+            timeout=5,
+        )
 
     @patch("frappe.publish_realtime")
     def test_failed_attempt_retries_then_escalates(self, publish):
