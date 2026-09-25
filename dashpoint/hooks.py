@@ -4,7 +4,7 @@ app_publisher = "Pavitradevi"
 app_description = "Same-day courier dispatch management built on pure Frappe."
 app_email = "pavitradevi297@gmail.com"
 app_license = "mit"
-
+ 
 jinja = {
     "methods": "dashpoint.dashpoint.utils.jinja_methods"
 }
