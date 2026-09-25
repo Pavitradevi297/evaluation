@@ -1,6 +1,6 @@
 # Root editor config file
 root = true
-
+ 
 # Common settings
 [*]
 end_of_line = lf
