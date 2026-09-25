@@ -4,7 +4,6 @@ from frappe import _
 
 @frappe.whitelist()
 def get_stuck_deliveries():
-    """Return open deliveries older than two days using Frappe Query Builder."""
     from frappe.query_builder import DocType
     from pypika import Order
 
@@ -30,7 +29,6 @@ def get_stuck_deliveries():
 
 @frappe.whitelist()
 def reassign_zone(from_rider, to_rider):
-    """Transfer all open Delivery Orders from one rider to another."""
     open_statuses = (
         "Draft",
         "Pickup Scheduled",
@@ -60,7 +58,6 @@ def reassign_zone(from_rider, to_rider):
 
 @frappe.whitelist()
 def rename_rider(old_name, new_name):
-    """Rename a Rider through Frappe so linked Delivery Orders are updated safely."""
     if not frappe.db.exists("Rider", old_name):
         frappe.throw(_("Rider {0} does not exist.").format(old_name))
     if frappe.db.exists("Rider", new_name):
@@ -70,7 +67,6 @@ def rename_rider(old_name, new_name):
 
 @frappe.whitelist()
 def share_delivery_order(delivery_order_name, user_email):
-    """Grant a specific user read access to one Delivery Order."""
     if not frappe.db.exists("Delivery Order", delivery_order_name):
         frappe.throw(_("Delivery Order {0} does not exist.").format(delivery_order_name))
     frappe.share.add("Delivery Order", delivery_order_name, user_email, read=1)
@@ -79,13 +75,11 @@ def share_delivery_order(delivery_order_name, user_email):
 
 @frappe.whitelist()
 def unsafe_get_delivery_order_data():
-    """Intentionally unsafe example for README/security training; never use in production."""
     return frappe.get_all("Delivery Order", fields="*")
 
 
 @frappe.whitelist()
 def safe_get_delivery_order_data():
-    """Return permission-aware Delivery Orders and hide customer contact data from non-managers."""
     fields = [
         "name", "customer_name", "customer_phone", "customer_email", "pickup_address",
         "delivery_address", "delivery_zone", "assigned_rider", "status",
@@ -100,7 +94,6 @@ def safe_get_delivery_order_data():
 
 @frappe.whitelist()
 def get_delivery_status():
-    """Return safe delivery status information for a Delivery Order."""
     delivery_order_name = frappe.form_dict.get("delivery_order_name")
 
     if not delivery_order_name or not frappe.db.exists(
@@ -124,7 +117,6 @@ def get_delivery_status():
 
 @frappe.whitelist()
 def send_delivery_confirmation(delivery_order_name):
-    """Background job for customer delivery confirmation email."""
     order = frappe.get_doc("Delivery Order", delivery_order_name)
 
     if not order.customer_email:
@@ -142,7 +134,6 @@ def send_delivery_confirmation(delivery_order_name):
 
 
 def send_webhook(delivery_order_name):
-    """Send delivery-completed webhook from a background job."""
     import requests
 
     settings = frappe.get_single("Dispatch Settings")
