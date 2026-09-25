@@ -182,3 +182,26 @@ participate in the data retrieval.
 Therefore, hiding a field in JavaScript is not considered a security
 control.
 
+
+## L2 — Outgoing Webhook on Submit
+
+DashPoint sends an outgoing webhook after a Delivery Order is successfully submitted.
+
+The webhook URL is configured through the `webhook_url` field in the `Dispatch Settings` Single DocType.
+
+The `Delivery Order.on_submit()` method uses `frappe.enqueue()` to call:
+
+`dashpoint.dashpoint.api.send_webhook`
+
+This keeps the network request out of the synchronous submission path.
+
+The background method:
+- reads the configured webhook URL from Dispatch Settings
+- loads the submitted Delivery Order
+- sends a JSON payload containing the event, Delivery Order name, and final amount
+- uses a 5-second HTTP timeout
+- calls `raise_for_status()` for unsuccessful HTTP responses
+- records failures with `frappe.log_error()`
+- records successful webhook delivery with `frappe.logger("dashpoint")`
+
+If no webhook URL is configured, the background task returns without making a network request.

@@ -101,19 +101,58 @@ def safe_get_delivery_order_data():
 
 @frappe.whitelist()
 def send_delivery_confirmation(delivery_order_name):
-    """Background job for delivery confirmation; it never blocks submission."""
+    """Background job for customer delivery confirmation email."""
     order = frappe.get_doc("Delivery Order", delivery_order_name)
+
     if not order.customer_email:
         frappe.logger("dashpoint").info(
-            "Delivery confirmation skipped for %s: no customer email", order.name
+            "Delivery confirmation skipped for %s: no customer email",
+            order.name,
         )
         return
+
     frappe.sendmail(
         recipients=[order.customer_email],
         subject=_("Delivery completed: {0}").format(order.name),
         message=_("Your delivery {0} has been completed.").format(order.name),
     )
 
+
+def send_webhook(delivery_order_name):
+    """Send delivery-completed webhook from a background job."""
+    import requests
+
+    settings = frappe.get_single("Dispatch Settings")
+
+    if not settings.webhook_url:
+        return
+
+    doc = frappe.get_doc("Delivery Order", delivery_order_name)
+
+    payload = {
+        "event": "delivery_completed",
+        "delivery_order": doc.name,
+        "amount": doc.final_amount,
+    }
+
+    try:
+        response = requests.post(
+            settings.webhook_url,
+            json=payload,
+            timeout=5,
+        )
+        response.raise_for_status()
+
+        frappe.logger("dashpoint").info(
+            "Delivery webhook sent successfully for %s",
+            doc.name,
+        )
+
+    except Exception as e:
+        frappe.log_error(
+            f"Webhook failed: {e}",
+            "Webhook Error",
+        )
 
 @frappe.whitelist()
 def get_dispatch_center_name():

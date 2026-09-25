@@ -77,8 +77,15 @@ class DeliveryOrder(Document):
     def on_submit(self):
         self.deduct_packaging_stock()
         self.create_delivery_receipt()
+
         frappe.enqueue(
             "dashpoint.dashpoint.api.send_delivery_confirmation",
+            queue="short",
+            delivery_order_name=self.name,
+        )
+
+        frappe.enqueue(
+            "dashpoint.dashpoint.api.send_webhook",
             queue="short",
             delivery_order_name=self.name,
         )
