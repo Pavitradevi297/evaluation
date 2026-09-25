@@ -8,7 +8,6 @@ def check_stuck_reattempts():
     The Audit Log entry acts as a daily idempotency sentinel.
     """
 
-    # Idempotency guard: run only once per day.
     last_run = frappe.db.get_value(
         "Audit Log",
         {
@@ -21,7 +20,6 @@ def check_stuck_reattempts():
     if last_run:
         return
 
-    # Consider retry orders older than 24 hours as stuck.
     cutoff = add_days(today(), -1)
 
     orders = frappe.get_list(
@@ -42,7 +40,6 @@ def check_stuck_reattempts():
             order.delivery_zone,
         )
 
-    # Create the daily sentinel after processing.
     audit_log = frappe.new_doc("Audit Log")
     audit_log.doctype_name = "DashPoint Scheduler"
     audit_log.document_name = "Stuck Re-attempt Sweep"
