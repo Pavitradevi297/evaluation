@@ -61,8 +61,6 @@ def make_delivery_order(zone="North Zone", rider=None, submittable=False, **over
 
 
 class TestDeliveryOrder(FrappeTestCase):
-    # FrappeTestCase automatically rolls back test database changes, so most
-    # tests do not need a custom tearDown that manually deletes test records.
 
     def test_invalid_phone_is_rejected(self):
         order = frappe.get_doc({
