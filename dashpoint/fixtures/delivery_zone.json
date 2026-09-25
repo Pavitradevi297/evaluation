@@ -1,17 +1,29 @@
 [
-  {
-    "doctype": "Delivery Zone",
-    "name": "North Zone",
-    "zone_name": "North Zone"
-  },
-  {
-    "doctype": "Delivery Zone",
-    "name": "Central Zone",
-    "zone_name": "Central Zone"
-  },
-  {
-    "doctype": "Delivery Zone",
-    "name": "South Zone",
-    "zone_name": "South Zone"
-  }
+ {
+  "avg_delivery_hours": 0,
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Delivery Zone",
+  "modified": "2026-09-25 10:55:38.087946",
+  "name": "North Zone",
+  "zone_name": "North Zone"
+ },
+ {
+  "avg_delivery_hours": 0,
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Delivery Zone",
+  "modified": "2026-09-25 10:55:38.125700",
+  "name": "Central Zone",
+  "zone_name": "Central Zone"
+ },
+ {
+  "avg_delivery_hours": 0,
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Delivery Zone",
+  "modified": "2026-09-25 10:55:38.137497",
+  "name": "South Zone",
+  "zone_name": "South Zone"
+ }
 ]

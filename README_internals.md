@@ -75,3 +75,110 @@ Putting a `frappe.get_all()` query directly in a Jinja print template couples da
 ## E2 — Rename utility
 
 DashPoint exposes `rename_rider(old_name, new_name)`, which calls `frappe.rename_doc("Rider", old_name, new_name, merge=False)`. Frappe updates Link-field references such as `Delivery Order.assigned_rider`; direct SQL name changes would not provide that integrity behavior.
+
+## K2 — N+1 Query Detection and Fix
+
+The N+1 problem occurs when Delivery Orders are fetched in one query,
+but a separate Rider query is executed for every Delivery Order.
+
+### Problematic approach
+
+```python
+orders = frappe.get_all(
+    "Delivery Order",
+    fields=["name", "assigned_rider"]
+)
+
+for o in orders:
+    rider = frappe.get_doc("Rider", o.assigned_rider)
+    print(rider.rider_name, rider.phone)
+## L1 — Custom Whitelisted Method
+
+DashPoint exposes `get_stuck_deliveries()` as a custom whitelisted
+method:
+
+```python
+@frappe.whitelist()
+def get_stuck_deliveries():
+    ...
+## L2 — Outgoing Webhook / Async Delivery Confirmation
+
+When a Delivery Order is submitted, `on_submit()` queues the delivery
+confirmation asynchronously using `frappe.enqueue()`:
+
+```python
+frappe.enqueue(
+    "dashpoint.dashpoint.api.send_delivery_confirmation",
+    queue="short",
+    delivery_order_name=self.name,
+)
+## N1 — ignore_permissions Audit
+
+DashPoint uses `ignore_permissions=True` only for controlled server-side
+operations where the application itself must perform an internal operation.
+
+### Installation defaults
+
+`install.py` uses `ignore_permissions=True` when creating the default
+Delivery Zones, Dispatch Settings, and Letter Head. These records are
+created by the installation process rather than by a normal logged-in
+user, so normal Desk permissions should not block application setup.
+
+### Scheduler Audit Log
+
+`tasks.py` uses `ignore_permissions=True` when creating the daily
+`stuck_reattempt_check` Audit Log sentinel. This is an internal
+scheduler operation and must not depend on the permissions of the user
+under which the scheduler happens to execute.
+
+### Delivery Receipt creation
+
+`Delivery Order.on_submit()` creates the system-generated Delivery
+Receipt with `ignore_permissions=True`. The receipt is an internal
+consequence of submitting a completed Delivery Order and should not
+depend on the submitting user's separate Delivery Receipt create
+permission.
+
+### Delivery attempt update
+
+The server-side `record_delivery_attempt()` operation uses
+`save(ignore_permissions=True)` because the controlled backend method
+updates the Delivery Order's state as part of the delivery workflow.
+The method is not relying on client-side field hiding as a security
+boundary.
+
+### Receipt cancellation
+
+When a Delivery Order is cancelled, its system-generated submitted
+Delivery Receipt is cancelled internally with permissions bypassed so
+the linked document can remain consistent with the parent lifecycle.
+
+These bypasses are intentionally limited to trusted server-side
+workflow, installation, scheduler, and system-generated document
+operations. They are not used as a replacement for the normal
+role-based permission matrix.
+
+## N1 — JavaScript Hiding Is Not Security
+
+Client-side JavaScript can hide a field from the Desk interface, but
+this does not prevent a user from accessing or modifying the field
+through the REST API, browser developer tools, or another client.
+
+DashPoint therefore treats JavaScript only as a user-interface
+customization.
+
+Actual protection is enforced through:
+
+- DocType role permissions
+- `permission_query_conditions` for Delivery Order row-level access
+- Server-side validation in DocType controllers
+- Permission-aware `frappe.get_list()` calls
+- Explicit server-side authorization for sensitive operations
+
+For example, the safe Delivery Order API uses `frappe.get_list()`
+instead of `frappe.get_all()`, allowing Frappe's permission system to
+participate in the data retrieval.
+
+Therefore, hiding a field in JavaScript is not considered a security
+control.
+
