@@ -1,73 +1,91 @@
-# DashPoint
+DashPoint
 
 DashPoint is a pure-Frappe same-day courier dispatch system for managing delivery zones, riders, packaging stock, delivery orders, delivery attempts, receipts, permissions, reports, and printing. ERPNext is not required.
 
-## Core implementation
 
-Implemented Core groups through J:
+Core implementation
 
-- **B — ORM & Query Builder:** Query Builder stuck-delivery query and transactional rider reassignment.
-- **C — Schema:** Delivery Zone, Rider, Packaging Material, Delivery Order, Packaging Usage Entry, Delivery Receipt, and Dispatch Settings.
-- **D — Permissions:** three DashPoint roles, DocPerm fixtures, Rider row-level filtering, per-record sharing, and safe/unsafe API examples.
-- **E — Lifecycle:** validation, submit stock checks/deduction, receipt creation, asynchronous confirmation, retry/escalation, realtime status publication, cancellation, and deletion protection.
-- **F — Hooks:** idempotent installation seed, wildcard audit logging, Jinja registration, and hourly scheduler registration.
-- **H — Client Scripts:** rider filtering, status indicators, delivery-attempt dialog, rider reassignment, zone warning, and packaging calculations.
-- **I — Reports:** Active Deliveries Query Report and Rider Performance Script Report.
-- **J — Print Format:** Jinja Delivery Receipt, Letter Head, `before_print`, currency formatting, COD banner, A4 CSS, and ten-row packaging page break.
+Core groups were implemented through J:
 
-## Installation on a fresh Frappe site
 
-```bash
+B — ORM & Query Builder: query builder used for stuck-delivery query and transactional rider reassignment
+
+C — Schema: Delivery Zone, Rider, Packaging Material, Delivery Order, Packaging Usage Entry, Delivery Receipt, and Dispatch Settings
+
+D — Permissions: three DashPoint roles, DocPerm fixtures, rider row-level filter, per-record sharing, and safe/unsafe API examples
+
+E — Lifecycle: validation, submit stock checks/deduction, receipt creation, async confirmation, retry/escalation, realtime status publication, cancellation, and deletion protection
+
+F — Hooks: idempotent installation seed, wildcard audit logging, Jinja registration, and hourly scheduler registration
+
+H — Client Scripts: rider filtering/status indicators/delivery-attempt dialog/rider reassignment/zone warning/packaging calculations
+
+I — Reports: Active Deliveries Query Report and Rider Performance Script Report
+
+J — Print Format: Jinja Delivery Receipt, Letter Head, before_print, currency formatting, COD banner, A4 CSS, and ten-row packaging page break
+
+Installation on a fresh Frappe site
+
 cd ~/frappe-bench
-bench get-app <YOUR_REPOSITORY_URL> --branch main
-bench --site <SITE_NAME> install-app dashpoint
-bench --site <SITE_NAME> migrate
-bench --site <SITE_NAME> clear-cache
+
+bench get-app --branch main
+
+bench --site install-app dashpoint
+
+bench --site migrate
+
+bench --site clear-cache
+
 bench restart
-```
 
-`after_install` creates North Zone, Central Zone, South Zone, the Single Dispatch Settings record, and the default DashPoint Letter Head if they do not already exist. The same master records are also included as fixtures.
+after_install creates North Zone, Central Zone, South Zone, the Single Dispatch Settings record, and the default DashPoint Letter Head if they do not already exist. The same master records are also included as fixtures.
 
-## Tests
 
-Run the complete local suite with:
 
-```bash
-bench --site <SITE_NAME> run-tests --app dashpoint
-```
+Tests
 
-The test suite uses `FrappeTestCase` and factory functions. Frappe's automatic rollback makes most explicit `tearDown()` database cleanup unnecessary.
+The entire local test suite can be run with:
 
-## Fixtures
+bench --site run-tests --app dashpoint
 
-After confirming a development site, export current fixtures with:
+The test suite uses FrappeTestCase and factory functions. Due to Frappe’s auto-rollback, most tests do not require an explicit tearDown() that would delete test records from the database.
 
-```bash
-bench --site <SITE_NAME> export-fixtures --app dashpoint
-```
 
-The repository already contains fixtures for the three roles, their DocPerm records, the three Delivery Zones, Dispatch Settings, and DashPoint Letter Head.
 
-## Reports
+Fixtures
 
-### Active Deliveries
+Once you have a development site up and running, you can export your current fixtures with:
 
-A parameterized Query Report listing all non-delivered/non-cancelled orders, optionally filtered by Delivery Zone.
 
-### Rider Performance
+bench --site export-fixtures --app dashpoint
 
-A permission-aware Script Report with date/rider filters, Total vs Delivered bar chart, report summary, success-rate formatter, and clickable Rider links. It uses `frappe.get_list()` so Rider row-level restrictions remain effective.
+The repo already includes fixtures for the three roles, their DocPerm entries, the three Delivery Zones, Dispatch Settings, and the DashPoint Letter Head.
 
-## Print format
+Reports
 
-The Delivery Receipt uses the default DashPoint Letter Head, `get_dispatch_center_name()`, `before_print()`, `format_value()`, a COD Pending banner, A4/1cm CSS, print-only CSS, and a packaging-table page break after ten rows.
+Active Deliveries
 
-## Security notes
+A parameterized Query Report that lists all non-delivered/non-cancelled Delivery Orders, optionally filtered by Delivery Zone.
 
-- Server-side permissions and row-level conditions are authoritative; JavaScript hiding is not a security boundary.
-- `unsafe_get_delivery_order_data()` exists only as the deliberately unsafe comparison required by the exercise. Use `safe_get_delivery_order_data()` for application behavior.
-- The stock deduction in `on_submit()` is a controlled server-side side effect and uses a direct database update so it is not blocked by the submitting user's Packaging Material permissions.
 
-## Documentation
+Rider Performance
 
-See [`README_internals.md`](README_internals.md) for the required ORM, lifecycle, security, async, SQL, and Jinja explanations.
+A permission aware Script Report with date/rider filters, Total vs Delivered bar chart, report summary, success-rate formatter, and clickable Rider links. Uses frappe.get_list() to ensure that row-level restrictions for Riders are still respected.
+
+
+Print format
+
+The Delivery Receipt DocType is printed with the default DashPoint Letter Head, get_dispatch_center_name(), before_print(), format_value() hooks, COD Pending banner, A4/Landscape CSS, print CSS (for hiding), and a ten-row packaging-table page-break.
+
+
+Security notes
+
+Server-side permissions and row-level restrictions take precedence over any client-visible hiding of elements.
+
+unsafe_get_delivery_order_data() only exists to provide the explicitly unsafe example requested in the assignment. You should always use safe_get_delivery_order_data() for app behaviors.
+
+The stock deduction on delivery receipt submit is a controlled server-side effect and should not be visible to or by the end-user requesting the receipt. As such, it uses a direct database update and is not wrapped inside any permission checks.
+
+Documentation
+
+See README_internals.md for the ORM requirements, lifecycles, security, async tasks, SQL, and Jinja conventions used in this implementation.
