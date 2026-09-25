@@ -8,32 +8,143 @@ from dashpoint.permissions import delivery_order_query_conditions
 
 class TestAPIAndPermissions(FrappeTestCase):
     def test_share_delivery_order_calls_share(self):
-        order = frappe.get_doc({
-            "doctype": "Delivery Order", "customer_name": "Share Test", "customer_phone": "9876543210",
-            "pickup_address": "A", "delivery_address": "B", "delivery_zone": "North Zone",
-            "package_description": "Parcel", "status": "Draft", "naming_series": "DO-.YYYY.-.#####",
-        }).insert(ignore_permissions=True)
+        order = frappe.get_doc(
+            {
+                "doctype": "Delivery Order",
+                "customer_name": "Share Test",
+                "customer_phone": "9876543210",
+                "pickup_address": "A",
+                "delivery_address": "B",
+                "delivery_zone": "North Zone",
+                "package_description": "Parcel",
+                "status": "Draft",
+                "naming_series": "DO-.YYYY.-.#####",
+            }
+        ).insert(ignore_permissions=True)
+
         with patch("frappe.share.add") as share_add:
-            result = share_delivery_order(order.name, "share@example.com")
-            share_add.assert_called_once_with("Delivery Order", order.name, "share@example.com", read=1)
+            result = share_delivery_order(
+                order.name,
+                "share@example.com",
+            )
+
+            share_add.assert_called_once_with(
+                "Delivery Order",
+                order.name,
+                "share@example.com",
+                read=1,
+            )
+
             self.assertTrue(result["shared"])
 
     def test_rename_rider_uses_frappe_rename_doc(self):
-        rider = frappe.get_doc({
-            "doctype": "Rider", "rider_name": "Rename Test", "assigned_zone": "North Zone",
-            "status": "Active", "vehicle_type": "Bike", "naming_series": "RDR-.####",
-        }).insert(ignore_permissions=True)
-        with patch("frappe.rename_doc", return_value="RDR-TEST-RENAMED") as rename_doc:
-            result = rename_rider(rider.name, "RDR-TEST-RENAMED")
-            rename_doc.assert_called_once_with("Rider", rider.name, "RDR-TEST-RENAMED", merge=False)
-            self.assertEqual(result, "RDR-TEST-RENAMED")
+        rider = frappe.get_doc(
+            {
+                "doctype": "Rider",
+                "rider_name": "Rename Test",
+                "assigned_zone": "North Zone",
+                "status": "Active",
+                "vehicle_type": "Bike",
+                "naming_series": "RDR-.####",
+            }
+        ).insert(ignore_permissions=True)
+
+        with patch(
+            "frappe.rename_doc",
+            return_value="RDR-TEST-RENAMED",
+        ) as rename_doc:
+            result = rename_rider(
+                rider.name,
+                "RDR-TEST-RENAMED",
+            )
+
+            rename_doc.assert_called_once_with(
+                "Rider",
+                rider.name,
+                "RDR-TEST-RENAMED",
+                merge=False,
+            )
+
+            self.assertEqual(
+                result,
+                "RDR-TEST-RENAMED",
+            )
 
     def test_rider_query_condition_is_row_limited_for_rider_role(self):
-        # The exact SQL condition is evaluated against the session user's Rider in a live site.
-        # Managers intentionally receive an empty condition.
-        with patch("frappe.get_roles", return_value=["DP Ops Manager"]):
-            self.assertEqual(delivery_order_query_conditions("test@example.com"), "")
+        # The exact SQL condition is evaluated against the session user's
+        # Rider in a live site. Managers intentionally receive an empty
+        # condition.
+        with patch(
+            "frappe.get_roles",
+            return_value=["DP Ops Manager"],
+        ):
+            self.assertEqual(
+                delivery_order_query_conditions("test@example.com"),
+                "",
+            )
 
     def test_safe_api_has_permission_aware_entrypoint(self):
         from dashpoint.dashpoint.api import safe_get_delivery_order_data
-        self.assertTrue(callable(safe_get_delivery_order_data))
+
+        self.assertTrue(
+            callable(safe_get_delivery_order_data)
+        )
+
+    def test_get_delivery_status_returns_expected_fields(self):
+        order = frappe.get_doc(
+            {
+                "doctype": "Delivery Order",
+                "customer_name": "L1 Test Customer",
+                "customer_phone": "9876543210",
+                "pickup_address": "Pollachi",
+                "delivery_address": "Coimbatore",
+                "package_description": "Test Package",
+                "delivery_zone": "North Zone",
+                "status": "Draft",
+                "delivery_attempts_count": 2,
+            }
+        )
+
+        order.insert()
+
+        with patch.dict(
+            frappe.form_dict,
+            {"delivery_order_name": order.name},
+            clear=False,
+        ):
+            result = frappe.get_attr(
+                "dashpoint.dashpoint.api.get_delivery_status"
+            )()
+
+        self.assertEqual(
+            result["status"],
+            "Draft",
+        )
+        self.assertEqual(
+            result["zone"],
+            "North Zone",
+        )
+        self.assertEqual(
+            result["attempts"],
+            2,
+        )
+
+    def test_get_delivery_status_returns_404_for_missing_order(self):
+        with patch.dict(
+            frappe.form_dict,
+            {"delivery_order_name": "DO-NOT-EXIST"},
+            clear=False,
+        ):
+            result = frappe.get_attr(
+                "dashpoint.dashpoint.api.get_delivery_status"
+            )()
+
+        self.assertEqual(
+            result,
+            {"error": "Not found"},
+        )
+
+        self.assertEqual(
+            frappe.local.response.get("http_status_code"),
+            404,
+        )
