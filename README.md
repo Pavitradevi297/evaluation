@@ -5,8 +5,6 @@ DashPoint is a pure-Frappe same-day courier dispatch system for managing deliver
 
 Core implementation
 
-Core groups were implemented through J:
-
 
 B — ORM & Query Builder: query builder used for stuck-delivery query and transactional rider reassignment
 
